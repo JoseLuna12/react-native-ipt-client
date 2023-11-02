@@ -1,32 +1,38 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import ChannelItem from '../components/channelListItem';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useIpptvData from '../helpers/getIptvDataHook';
+import HomeView from '../components/homeView';
+const Stack = createNativeStackNavigator();
+
+
 
 export default function HomePage() {
 
-    const data = useIpptvData(2000)
 
     return (
-        <SafeAreaView>
-            <View styles={styles.container}>
-                <View style={{ height: 10 }} />
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={data}
-                    renderItem={({ item }) => {
-                        return (
-                            <ChannelItem image={item.tvg.logo} name={item.name} playlist={item.url} />
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Home"
+                    component={HomeView}
+                    options={{
+                        headerTitle: "Test app",
+                        headerRight: () => (
+                            <Button
+                                onPress={() => alert('This is a button!')}
+                                color="#fff"
+                                title="More" />
                         )
                     }}
-                    keyExtractor={item => item.rnId}
                 />
-            </View>
-        </SafeAreaView>
+                <Stack.Screen
+                    name="channel" component={ChannelDetail}
+                    options={({ route }) => ({ title: route.params.title })}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#f1f1f6',
-    }
-});
